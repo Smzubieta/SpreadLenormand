@@ -39,7 +39,7 @@ const cartasLenormand = {
 };
 // Configuración de archivos
 const totalCartas = 36;
-const extension = ".png"; 
+const extension = ".webp"; 
 let carpetaActual = ""; // Ahora arranca vacía y se llena al elegir
 let tiradaActual = "three";
 
