@@ -45,6 +45,43 @@ h1 {
     min-height: 380px;
 }
 
+.opciones-tirada {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px auto 35px;
+    max-width: 900px;
+}
+
+.btn-tirada {
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.65);
+    color: var(--dorado-claro);
+    padding: 10px 18px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: bold;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.btn-tirada:hover {
+    background: rgba(212, 175, 55, 0.14);
+    color: var(--texto);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.2);
+}
+
+.btn-tirada.activo {
+    background: linear-gradient(135deg, #b8860b, #d4af37, #b8860b);
+    color: #111;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.35);
+}
+
 /* --- EFECTOS 3D DE LAS CARTAS --- */
 .carta-3d-wrapper {
     perspective: 1000px; /* Crea la profundidad para el 3D */
@@ -97,6 +134,10 @@ h1 {
 .carta-anverso {
     transform: rotateY(180deg); /* El frente arranca dado vuelta */
     background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .carta-anverso img {
@@ -111,6 +152,96 @@ h1 {
     transform: rotateY(180deg) scale(1.05) translateY(-10px);
     box-shadow: 0 20px 35px rgba(212, 175, 55, 0.5);
     cursor: pointer;
+}
+
+.carta-lectura {
+    gap: 0;
+}
+
+.carta-lectura-compacta {
+    width: 100%;
+}
+
+.carta-lectura-compacta .carta-inner {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+}
+
+.carta-lectura-compacta .nombre-carta {
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+.carta-placeholder {
+    width: calc(100% - 18px);
+    height: calc(100% - 18px);
+    margin: 9px;
+    border-radius: 9px;
+    background: linear-gradient(160deg, rgba(212, 175, 55, 0.16), rgba(15, 23, 42, 0.95));
+    color: var(--dorado-claro);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 18px;
+    box-sizing: border-box;
+    gap: 8px;
+}
+
+.carta-placeholder strong {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+}
+
+.carta-placeholder span {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+}
+
+.posicion-carta {
+    margin-bottom: 14px;
+    font-family: 'Cinzel', serif;
+    color: var(--dorado);
+    letter-spacing: 0.8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.tirada-cruz {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    grid-template-areas:
+        ". top ."
+        "left center right"
+        ". bottom .";
+    gap: 28px 22px;
+    align-items: start;
+    justify-items: center;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tirada-cruz .cross-top { grid-area: top; }
+.tirada-cruz .cross-left { grid-area: left; }
+.tirada-cruz .cross-center { grid-area: center; }
+.tirada-cruz .cross-right { grid-area: right; }
+.tirada-cruz .cross-bottom { grid-area: bottom; }
+
+.tirada-tableau {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tirada-tableau .carta-3d-wrapper {
+    width: 100%;
 }
 
 /* Nombre de la carta (Oculto hasta que gira) */
@@ -133,7 +264,7 @@ p.nombre-visible {
 }
 
 /* --- BOTÓN --- */
-button {
+button:not(.btn-tirada) {
     background: linear-gradient(135deg, #b8860b, #d4af37, #b8860b);
     color: #111;
     border: none;
@@ -147,12 +278,12 @@ button {
     transition: all 0.3s ease;
 }
 
-button:hover:not(:disabled) {
+button:not(.btn-tirada):hover:not(:disabled) {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(212, 175, 55, 0.6);
 }
 
-button:disabled {
+button:not(.btn-tirada):disabled {
     background: #555;
     color: #999;
     cursor: not-allowed;
@@ -170,7 +301,7 @@ button:disabled {
     h1 { font-size: 2.2rem; }
     
     /* 1. Transformamos el contenedor en un Carrusel Horizontal */
-    .mazo-container { 
+    .mazo-container:not(.tirada-cruz):not(.tirada-tableau) { 
         flex-wrap: nowrap; /* Evita que las cartas caigan a la línea de abajo */
         overflow-x: auto; /* Habilita el deslizamiento horizontal con el dedo */
         scroll-snap-type: x mandatory; /* Activa el "imán" al deslizar */
@@ -185,7 +316,7 @@ button:disabled {
     .mazo-container { -ms-overflow-style: none; scrollbar-width: none; }
 
     /* 3. Ajustamos cada carta dentro del carrusel */
-    .carta-3d-wrapper { 
+    .mazo-container:not(.tirada-cruz):not(.tirada-tableau) .carta-3d-wrapper { 
         flex: 0 0 85%; /* Ocupa el 85% de la pantalla, dejando asomar la siguiente carta */
         scroll-snap-align: center; /* El "imán" frena la carta justo en el centro */
     }
@@ -197,6 +328,29 @@ button:disabled {
     /* Botones de inicio más adaptados al celular */
     .opciones-mazo { padding: 0 20px; box-sizing: border-box; }
     .btn-mazo { width: 100%; max-width: 300px; }
+    .opciones-tirada { padding: 0 12px; }
+    .btn-tirada { width: calc(50% - 12px); min-width: 140px; }
+    .tirada-cruz {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+        grid-template-areas:
+            "top top"
+            "left right"
+            "center center"
+            "bottom bottom";
+        gap: 22px 14px;
+    }
+    .tirada-cruz .carta-3d-wrapper,
+    .tirada-tableau .carta-3d-wrapper {
+        flex: initial;
+    }
+    .tirada-tableau {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+    .tirada-tableau .nombre-carta {
+        font-size: 0.78rem;
+        margin-top: 8px;
+    }
 }
 /* Estilos para los textos debajo de la carta */
 .nombre-carta {

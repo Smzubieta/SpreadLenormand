@@ -23,12 +23,20 @@
 
     <div id="pantalla-juego" class="interfaz" style="display: none;">
         <h1>Lectura de Cartas</h1>
+
+        <div class="opciones-tirada" aria-label="Seleccionar tipo de tirada">
+            <button class="btn-tirada" type="button" data-spread="one" onclick="seleccionarTirada('one')">One card</button>
+            <button class="btn-tirada" type="button" data-spread="two" onclick="seleccionarTirada('two')">Two cards</button>
+            <button class="btn-tirada activo" type="button" data-spread="three" onclick="seleccionarTirada('three')">Three cards</button>
+            <button class="btn-tirada" type="button" data-spread="cross" onclick="seleccionarTirada('cross')">Lenormand Cross</button>
+            <button class="btn-tirada" type="button" data-spread="tableau" onclick="seleccionarTirada('tableau')">Grand Tableau</button>
+        </div>
         
         <div id="contenedor-cartas" class="mazo-container">
             <p style="color: #888;">Toca el botón para revelar tus cartas...</p>
         </div>
         
-        <button onclick="repartir()">Lanzar Cartas</button>
+        <button id="btn-lanzar" onclick="repartir()">Lanzar Cartas</button>
         <br><br>
         <a href="#" onclick="volverInicio()" style="color: #888; text-decoration: underline; font-size: 0.9rem;">Cambiar de Mazo</a>
     </div>

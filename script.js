@@ -41,6 +41,42 @@ const cartasLenormand = {
 const totalCartas = 36;
 const extension = ".png"; 
 let carpetaActual = ""; // Ahora arranca vacía y se llena al elegir
+let tiradaActual = "three";
+
+const SPREADS = {
+    // Agrega futuras tiradas aquí manteniendo la misma estructura.
+    one: {
+        name: "One card",
+        count: 1,
+        positions: ["Answer"]
+    },
+    two: {
+        name: "Two cards",
+        count: 2,
+        positions: ["Situation", "Influence"]
+    },
+    three: {
+        name: "Three cards",
+        count: 3,
+        positions: ["Past", "Present", "Future"]
+    },
+    cross: {
+        name: "Lenormand Cross",
+        count: 5,
+        positions: [
+            "Top: main influence",
+            "Left: past or root",
+            "Center: current situation",
+            "Right: development or future",
+            "Bottom: base, result, or advice"
+        ]
+    },
+    tableau: {
+        name: "Grand Tableau",
+        count: 36,
+        positions: []
+    }
+};
 
 // Función para elegir el mazo y cambiar de pantalla
 function seleccionarMazo(nombreCarpeta) {
@@ -49,6 +85,7 @@ function seleccionarMazo(nombreCarpeta) {
     // Ocultamos el inicio y mostramos el juego
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('pantalla-juego').style.display = 'block';
+    actualizarBotonesTirada();
     
     // Limpiamos la mesa por si venía de otra lectura
     document.getElementById('contenedor-cartas').innerHTML = '<p style="color: #888;">Toca el botón para revelar tus cartas...</p>';
@@ -60,62 +97,161 @@ function volverInicio() {
     document.getElementById('pantalla-inicio').style.display = 'block';
 }
 
+function seleccionarTirada(type) {
+    if (!SPREADS[type]) return;
+
+    tiradaActual = type;
+    actualizarBotonesTirada();
+}
+
+function actualizarBotonesTirada() {
+    const botones = document.querySelectorAll('.btn-tirada');
+    botones.forEach((boton) => {
+        const activa = boton.dataset.spread === tiradaActual;
+        boton.classList.toggle('activo', activa);
+        boton.setAttribute('aria-pressed', activa ? 'true' : 'false');
+    });
+}
+
+function getRandomCards(count) {
+    const mazo = [];
+    for (let i = 1; i <= totalCartas; i++) mazo.push(i);
+
+    for (let i = mazo.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [mazo[i], mazo[j]] = [mazo[j], mazo[i]];
+    }
+
+    return mazo.slice(0, count);
+}
+
 function repartir() {
-    const btn = document.querySelector('#pantalla-juego button');
+    const btn = document.getElementById('btn-lanzar');
+    const spreadType = SPREADS[tiradaActual] ? tiradaActual : "three";
+    const spread = SPREADS[spreadType];
+
     btn.disabled = true;
     btn.innerText = "Revelando el destino...";
 
-    let mazo = [];
-    for (let i = 1; i <= totalCartas; i++) mazo.push(i);
-    const seleccionadas = mazo.sort(() => Math.random() - 0.5).slice(0, 3);
-
     const contenedor = document.getElementById('contenedor-cartas');
-    contenedor.innerHTML = ""; 
-    contenedor.scrollLeft = 0; 
-    seleccionadas.forEach((numero, index) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'carta-3d-wrapper';
+    contenedor.innerHTML = "";
+    contenedor.scrollLeft = 0;
 
-        const inner = document.createElement('div');
-        inner.className = 'carta-inner';
+    const seleccionadas = getRandomCards(spread.count);
+    renderSpread(seleccionadas, spreadType);
 
-        const reverso = document.createElement('div');
-        reverso.className = 'carta-cara carta-reverso';
-
-        const anverso = document.createElement('div');
-        anverso.className = 'carta-cara carta-anverso';
-        const img = document.createElement('img');
-        
-        // ACÁ ESTÁ LA MAGIA: Usa la carpeta que el usuario eligió
-        img.src = `${carpetaActual}${numero}${extension}`;
-        img.alt = cartasLenormand[numero].nombre;
-        anverso.appendChild(img);
-
-        inner.appendChild(reverso);
-        inner.appendChild(anverso);
-        wrapper.appendChild(inner);
-
-        const pNombre = document.createElement('p');
-        pNombre.className = 'nombre-carta texto-oculto';
-        pNombre.innerText = cartasLenormand[numero].nombre;
-        wrapper.appendChild(pNombre);
-
-        const pDesc = document.createElement('p');
-        pDesc.className = 'desc-carta texto-oculto';
-        pDesc.innerText = cartasLenormand[numero].desc;
-        wrapper.appendChild(pDesc);
-        
-        contenedor.appendChild(wrapper);
-
-        setTimeout(() => {
-            inner.classList.add('volteada');
-            pNombre.classList.add('texto-visible');
-            pDesc.classList.add('texto-visible');
-        }, 800 + (index * 1000));
-    });
-
+    const tiempoDesbloqueo = 1800 + (Math.max(spread.count - 1, 0) * 160);
     setTimeout(() => {
         btn.disabled = false;
         btn.innerText = "Lanzar Cartas";
-    }, 4000);
+    }, tiempoDesbloqueo);
 }
+
+function renderSpread(cards, type) {
+    if (type === "cross") {
+        renderCross(cards);
+        return;
+    }
+
+    if (type === "tableau") {
+        renderTableau(cards);
+        return;
+    }
+
+    const contenedor = document.getElementById('contenedor-cartas');
+    contenedor.className = 'mazo-container';
+
+    cards.forEach((number, index) => {
+        const position = SPREADS[type].positions[index] || "";
+        contenedor.appendChild(renderCard(number, position, index));
+    });
+}
+
+function renderCard(number, position, index = 0, compacta = false) {
+    const carta = cartasLenormand[number];
+    const wrapper = document.createElement('div');
+    wrapper.className = `carta-3d-wrapper carta-lectura${compacta ? ' carta-lectura-compacta' : ''}`;
+
+    if (position) {
+        const posicion = document.createElement('div');
+        posicion.className = 'posicion-carta';
+        posicion.innerText = position;
+        wrapper.appendChild(posicion);
+    }
+
+    const inner = document.createElement('div');
+    inner.className = 'carta-inner';
+
+    const reverso = document.createElement('div');
+    reverso.className = 'carta-cara carta-reverso';
+
+    const anverso = document.createElement('div');
+    anverso.className = 'carta-cara carta-anverso';
+
+    const img = document.createElement('img');
+    img.src = `${carpetaActual}${number}${extension}`;
+    img.alt = carta.nombre;
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'carta-placeholder';
+    placeholder.innerHTML = `<strong>${carta.nombre}</strong><span>Imagen no disponible</span>`;
+    placeholder.style.display = 'none';
+
+    img.onerror = () => {
+        img.style.display = 'none';
+        placeholder.style.display = 'flex';
+    };
+
+    anverso.appendChild(img);
+    anverso.appendChild(placeholder);
+    inner.appendChild(reverso);
+    inner.appendChild(anverso);
+    wrapper.appendChild(inner);
+
+    const nombre = document.createElement('p');
+    nombre.className = 'nombre-carta texto-oculto';
+    nombre.innerText = carta.nombre;
+    wrapper.appendChild(nombre);
+
+    if (!compacta) {
+        const desc = document.createElement('p');
+        desc.className = 'desc-carta texto-oculto';
+        desc.innerText = carta.desc;
+        wrapper.appendChild(desc);
+    }
+
+    setTimeout(() => {
+        inner.classList.add('volteada');
+        nombre.classList.add('texto-visible');
+
+        const descripcion = wrapper.querySelector('.desc-carta');
+        if (descripcion) descripcion.classList.add('texto-visible');
+    }, 800 + (index * 160));
+
+    return wrapper;
+}
+
+function renderCross(cards) {
+    const contenedor = document.getElementById('contenedor-cartas');
+    contenedor.className = 'mazo-container tirada-cruz';
+
+    const positions = ['cross-top', 'cross-left', 'cross-center', 'cross-right', 'cross-bottom'];
+
+    cards.forEach((number, index) => {
+        const card = renderCard(number, SPREADS.cross.positions[index], index);
+        card.classList.add(positions[index]);
+        contenedor.appendChild(card);
+    });
+}
+
+function renderTableau(cards) {
+    const contenedor = document.getElementById('contenedor-cartas');
+    contenedor.className = 'mazo-container tirada-tableau';
+
+    cards.forEach((number, index) => {
+        const card = renderCard(number, "", index, true);
+        contenedor.appendChild(card);
+    });
+}
+
+actualizarBotonesTirada();
