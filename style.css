@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+    --dorado: #d4af37;
+    --dorado-claro: #f3e5ab;
+    --fondo-oscuro: #0f172a;
+    --fondo-medio: #1e293b;
+    --texto: #f8fafc;
+}
+
+body {
+    background: radial-gradient(circle at center, var(--fondo-medio), var(--fondo-oscuro));
+    color: var(--texto);
+    font-family: 'Lora', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.interfaz {
+    text-align: center;
+    padding: 20px;
+    max-width: 900px;
+    width: 100%;
+}
+
+h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    color: var(--dorado);
+    text-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.mazo-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    margin: 50px 0;
+    min-height: 380px;
+}
+
+/* --- EFECTOS 3D DE LAS CARTAS --- */
+.carta-3d-wrapper {
+    perspective: 1000px; /* Crea la profundidad para el 3D */
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: aparecerMesa 0.5s ease-out forwards;
+}
+
+.carta-inner {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d; /* Permite que el frente y dorso coexistan en 3D */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+}
+
+/* Esta clase es la que el JS agrega para dar vuelta la carta */
+.carta-inner.volteada {
+    transform: rotateY(180deg);
+}
+
+.carta-cara {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Oculta la cara que está de espaldas */
+    border-radius: 12px;
+    border: 3px solid var(--dorado);
+    box-sizing: border-box;
+}
+
+/* Diseño automático del dorso si no tenés una foto */
+.carta-reverso {
+    background: repeating-linear-gradient(45deg, #0f172a, #0f172a 10px, #1e293b 10px, #1e293b 20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.carta-reverso::after {
+    content: '✧';
+    color: var(--dorado);
+    font-size: 4rem;
+    text-shadow: 0 0 10px var(--dorado);
+}
+
+.carta-anverso {
+    transform: rotateY(180deg); /* El frente arranca dado vuelta */
+    background-color: #000;
+}
+
+.carta-anverso img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 9px; 
+}
+
+/* Efecto hover sobre la carta girada */
+.carta-inner.volteada:hover {
+    transform: rotateY(180deg) scale(1.05) translateY(-10px);
+    box-shadow: 0 20px 35px rgba(212, 175, 55, 0.5);
+    cursor: pointer;
+}
+
+/* Nombre de la carta (Oculto hasta que gira) */
+p {
+    margin-top: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dorado-claro);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0; /* Arranca invisible */
+    transform: translateY(-10px);
+    transition: all 0.5s ease forwards;
+}
+
+p.nombre-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- BOTÓN --- */
+button {
+    background: linear-gradient(135deg, #b8860b, #d4af37, #b8860b);
+    color: #111;
+    border: none;
+    padding: 15px 40px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.6);
+}
+
+button:disabled {
+    background: #555;
+    color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+@keyframes aparecerMesa {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Adaptación para celulares - EFECTO CARRUSEL DESLIZABLE */
+@media (max-width: 768px) {
+    h1 { font-size: 2.2rem; }
+    
+    /* 1. Transformamos el contenedor en un Carrusel Horizontal */
+    .mazo-container { 
+        flex-wrap: nowrap; /* Evita que las cartas caigan a la línea de abajo */
+        overflow-x: auto; /* Habilita el deslizamiento horizontal con el dedo */
+        scroll-snap-type: x mandatory; /* Activa el "imán" al deslizar */
+        justify-content: flex-start;
+        gap: 15px; /* Espacio entre cartas */
+        padding: 20px 5%; /* Margen lateral para que la primera carta quede centrada */
+        scroll-behavior: smooth;
+    }
+
+    /* 2. Ocultamos la barra de scroll fea del navegador para que parezca una App */
+    .mazo-container::-webkit-scrollbar { display: none; }
+    .mazo-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* 3. Ajustamos cada carta dentro del carrusel */
+    .carta-3d-wrapper { 
+        flex: 0 0 85%; /* Ocupa el 85% de la pantalla, dejando asomar la siguiente carta */
+        scroll-snap-align: center; /* El "imán" frena la carta justo en el centro */
+    }
+
+    /* 4. Ajustes de tamaño visual */
+    .carta-inner { width: 180px; height: 270px; }
+    .desc-carta { max-width: 90%; margin: 0 auto; }
+    
+    /* Botones de inicio más adaptados al celular */
+    .opciones-mazo { padding: 0 20px; box-sizing: border-box; }
+    .btn-mazo { width: 100%; max-width: 300px; }
+}
+/* Estilos para los textos debajo de la carta */
+.nombre-carta {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dorado-claro);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.desc-carta {
+    margin-top: 0;
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    color: #cbd5e1; /* Un gris azulado claro para no competir con el título */
+    line-height: 1.4;
+    font-style: italic;
+    max-width: 220px; /* Evita que el texto se estire demasiado hacia los lados */
+}
+
+/* Animación de visibilidad unificada */
+.texto-oculto {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.5s ease forwards;
+}
+
+.texto-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* Estilos para los botones de selección de mazo */
+.opciones-mazo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.btn-mazo {
+    background: transparent;
+    border: 2px solid var(--dorado);
+    color: var(--dorado-claro);
+    width: 250px;
+    padding: 15px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    animation: none; /* Le sacamos la animación de brillo constante */
+}
+
+.btn-mazo:hover {
+    background: var(--dorado);
+    color: #000;
+    transform: scale(1.05);
+}

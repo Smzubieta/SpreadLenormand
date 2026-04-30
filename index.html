@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo de Cartas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="pantalla-inicio" class="interfaz">
+        <h1>Elige tu Mazo</h1>
+        <p style="color: var(--dorado-claro); margin-bottom: 30px;">Selecciona la baraja con la que deseas consultar tu destino...</p>
+        
+        <div class="opciones-mazo">
+            <button class="btn-mazo" onclick="seleccionarMazo('Navegante/')">Mazo Navegante</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('gotico/')">Mazo gotico</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('Encantado/')">Mazo Encantado</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('Rosa/')">Mazo Rosa</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('Buenos/')">Mazo Buenos Aires</button>
+            </div>
+    </div>
+
+    <div id="pantalla-juego" class="interfaz" style="display: none;">
+        <h1>Lectura de Cartas</h1>
+        
+        <div id="contenedor-cartas" class="mazo-container">
+            <p style="color: #888;">Toca el botón para revelar tus cartas...</p>
+        </div>
+        
+        <button onclick="repartir()">Lanzar Cartas</button>
+        <br><br>
+        <a href="#" onclick="volverInicio()" style="color: #888; text-decoration: underline; font-size: 0.9rem;">Cambiar de Mazo</a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
