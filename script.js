@@ -46,29 +46,29 @@ let tiradaActual = "three";
 const SPREADS = {
     // Agrega futuras tiradas aquí manteniendo la misma estructura.
     one: {
-        name: "One card",
+        name: "Una carta",
         count: 1,
-        positions: ["Answer"]
+        positions: ["Respuesta"]
     },
     two: {
-        name: "Two cards",
+        name: "Dos Cartas",
         count: 2,
-        positions: ["Situation", "Influence"]
+        positions: ["Situacion", "Influencia"]
     },
     three: {
-        name: "Three cards",
+        name: "Tres Cartas",
         count: 3,
-        positions: ["Past", "Present", "Future"]
+        positions: ["Pasado", "Presente", "Futuro"]
     },
     cross: {
-        name: "Lenormand Cross",
+        name: "Cruz lenormand",
         count: 5,
         positions: [
-            "Top: main influence",
-            "Left: past or root",
-            "Center: current situation",
-            "Right: development or future",
-            "Bottom: base, result, or advice"
+            "Arriba: Mayor influencia",
+            "Izquierda: Pasado o raiz",
+            "Centro: Situacion actual",
+            "Derecha: Desarollo ofuturo",
+            "Abajo: Base, resultado o consejo"
         ]
     },
     tableau: {
