@@ -42,6 +42,7 @@ const totalCartas = 36;
 const extension = ".webp"; 
 let carpetaActual = ""; // Ahora arranca vacía y se llena al elegir
 let tiradaActual = "three";
+let lecturaActual = null;
 
 const SPREADS = {
     // Agrega futuras tiradas aquí manteniendo la misma estructura.
@@ -78,9 +79,18 @@ const SPREADS = {
     }
 };
 
+const DECK_NAMES = {
+    "img/Navegante/": "Mazo Navegante",
+    "img/Gotico/": "Mazo Gotico",
+    "img/Encantado/": "Mazo Encantado",
+    "img/Rosa/": "Mazo Rosa",
+    "img/BuenosAires/": "Mazo Buenos Aires"
+};
+
 // Función para elegir el mazo y cambiar de pantalla
 function seleccionarMazo(nombreCarpeta) {
     carpetaActual = nombreCarpeta;
+    lecturaActual = null;
     
     // Ocultamos el inicio y mostramos el juego
     document.getElementById('pantalla-inicio').style.display = 'none';
@@ -89,12 +99,18 @@ function seleccionarMazo(nombreCarpeta) {
     
     // Limpiamos la mesa por si venía de otra lectura
     document.getElementById('contenedor-cartas').innerHTML = '<p style="color: #888;">Toca el botón para revelar tus cartas...</p>';
+    actualizarResumenLectura();
+    actualizarEstadoExportacion();
 }
 
 // Función para volver a la pantalla de selección
 function volverInicio() {
     document.getElementById('pantalla-juego').style.display = 'none';
     document.getElementById('pantalla-inicio').style.display = 'block';
+    lecturaActual = null;
+    document.getElementById('contenedor-cartas').innerHTML = '<p style="color: #888;">Toca el botón para revelar tus cartas...</p>';
+    actualizarResumenLectura();
+    actualizarEstadoExportacion();
 }
 
 function seleccionarTirada(type) {
@@ -138,7 +154,15 @@ function repartir() {
     contenedor.scrollLeft = 0;
 
     const seleccionadas = getRandomCards(spread.count);
+    lecturaActual = {
+        deckName: getDeckName(),
+        spreadType,
+        spreadName: spread.name,
+        cards: seleccionadas
+    };
+    actualizarResumenLectura();
     renderSpread(seleccionadas, spreadType);
+    actualizarEstadoExportacion();
 
     const tiempoDesbloqueo = 1800 + (Math.max(spread.count - 1, 0) * 160);
     setTimeout(() => {
@@ -159,7 +183,7 @@ function renderSpread(cards, type) {
     }
 
     const contenedor = document.getElementById('contenedor-cartas');
-    contenedor.className = 'mazo-container';
+    contenedor.className = `mazo-container tirada-${type}`;
 
     cards.forEach((number, index) => {
         const position = SPREADS[type].positions[index] || "";
@@ -254,4 +278,134 @@ function renderTableau(cards) {
     });
 }
 
+function getDeckName() {
+    return DECK_NAMES[carpetaActual] || "Mazo Lenormand";
+}
+
+function actualizarResumenLectura() {
+    const encabezado = document.getElementById('lectura-encabezado');
+
+    if (!lecturaActual) {
+        encabezado.hidden = true;
+        encabezado.innerHTML = "";
+        return;
+    }
+
+    encabezado.hidden = false;
+    encabezado.innerHTML = `
+        <p class="lectura-etiqueta">${lecturaActual.deckName}</p>
+        <h2>${lecturaActual.spreadName}</h2>
+        <p class="lectura-subtitulo">${lecturaActual.cards.length} carta${lecturaActual.cards.length === 1 ? "" : "s"} revelada${lecturaActual.cards.length === 1 ? "" : "s"}</p>
+    `;
+}
+
+function actualizarEstadoExportacion() {
+    const hayLectura = Boolean(lecturaActual);
+    const acciones = document.getElementById('acciones-exportacion');
+    acciones.hidden = !hayLectura;
+}
+
+function construirNombreArchivo(extensionArchivo) {
+    if (!lecturaActual) return `lenormand-tirada-mazo.${extensionArchivo}`;
+
+    const slugify = (value) => value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .toLowerCase();
+
+    const spreadSlug = slugify(lecturaActual.spreadName || "tirada");
+    const deckSlug = slugify(lecturaActual.deckName || "mazo");
+
+    return `lenormand-${spreadSlug || "tirada"}-${deckSlug || "mazo"}.${extensionArchivo}`;
+}
+
+async function esperarRecursosLectura() {
+    const lectura = document.getElementById('contenedor-cartas');
+    const imagenes = Array.from(lectura.querySelectorAll('img'));
+    const cargas = imagenes.map((img) => {
+        if (img.complete) return Promise.resolve();
+
+        return new Promise((resolve) => {
+            img.addEventListener('load', resolve, { once: true });
+            img.addEventListener('error', resolve, { once: true });
+        });
+    });
+
+    await Promise.all(cargas);
+}
+
+async function capturarLectura() {
+    const lectura = document.getElementById('contenedor-cartas');
+
+    if (!lectura || !lectura.querySelector('img')) {
+        alert("Primero generá una tirada.");
+        return null;
+    }
+
+    if (!window.html2canvas) {
+        throw new Error("html2canvas no esta disponible.");
+    }
+
+    await esperarRecursosLectura();
+
+    lectura.classList.add('exportando');
+
+    try {
+        const canvas = await html2canvas(lectura, {
+            backgroundColor: "#fbf6ec",
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            onclone: (doc) => {
+                const clonedResult = doc.getElementById('contenedor-cartas');
+                if (clonedResult) {
+                    clonedResult.classList.add('exportando');
+                }
+
+                doc.querySelectorAll('.carta-inner').forEach((inner) => {
+                    inner.classList.add('volteada');
+                });
+
+                doc.querySelectorAll('.texto-oculto').forEach((textNode) => {
+                    textNode.classList.add('texto-visible');
+                });
+            }
+        });
+
+        return canvas;
+    } finally {
+        lectura.classList.remove('exportando');
+    }
+}
+
+async function exportReadingAsImage() {
+    try {
+        const canvas = await capturarLectura();
+        if (!canvas) return;
+
+        const blob = await new Promise((resolve) => {
+            canvas.toBlob(resolve, 'image/png');
+        });
+
+        if (!blob) {
+            throw new Error("No se pudo crear la imagen PNG.");
+        }
+
+        const imageUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = construirNombreArchivo('png');
+        link.href = imageUrl;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(imageUrl), 1000);
+    } catch (error) {
+        console.error(error);
+        alert("No pude generar la imagen en este momento.");
+    }
+}
+
 actualizarBotonesTirada();
+actualizarEstadoExportacion();

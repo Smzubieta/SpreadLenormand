@@ -12,6 +12,10 @@
     box-sizing: border-box;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 body {
     background: radial-gradient(circle at center, var(--fondo-medio), var(--fondo-oscuro));
     color: var(--texto);
@@ -50,6 +54,71 @@ h1 {
     min-height: 380px;
     width: 100%;
     max-width: 100%;
+}
+
+.lectura-resultado {
+    position: relative;
+    width: 100%;
+    margin: 0 auto 1.5rem;
+    padding: clamp(1.2rem, 2vw, 1.6rem);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.42));
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+    overflow: hidden;
+}
+
+.resultado-tirada {
+    display: block;
+}
+
+.lectura-resultado::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top, rgba(212, 175, 55, 0.1), transparent 42%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 30%);
+    pointer-events: none;
+}
+
+.lectura-encabezado {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.5rem;
+}
+
+.lectura-encabezado h2 {
+    margin: 0.25rem 0 0;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: var(--dorado-claro);
+    letter-spacing: 1px;
+}
+
+.lectura-etiqueta,
+.lectura-subtitulo {
+    margin: 0;
+}
+
+.lectura-etiqueta {
+    color: var(--dorado);
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    font-size: 0.82rem;
+}
+
+.lectura-subtitulo {
+    margin-top: 0.45rem;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
+.lectura-resultado .mazo-container {
+    position: relative;
+    z-index: 1;
 }
 
 .opciones-tirada {
@@ -385,6 +454,20 @@ button:not(.btn-tirada):disabled {
     box-shadow: none;
 }
 
+.acciones-exportacion {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin: 0 0 1.6rem;
+}
+
+.acciones-exportacion button {
+    min-width: 260px;
+    font-size: 1rem;
+    padding: 0.85rem 1.6rem;
+}
+
 #pantalla-juego > a {
     display: inline-block;
     margin-top: 0.5rem;
@@ -448,6 +531,27 @@ button:not(.btn-tirada):disabled {
         margin: 1.75rem 0;
         min-height: 0;
         gap: 1.5rem;
+    }
+
+    .lectura-resultado {
+        padding: 1rem 0.85rem 1.25rem;
+        border-radius: 20px;
+    }
+
+    .lectura-encabezado h2 {
+        font-size: 1.35rem;
+    }
+
+    .acciones-exportacion {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .acciones-exportacion button {
+        width: 100%;
+        min-width: 0;
+        min-height: 52px;
     }
 
     .carta-3d-wrapper {
@@ -571,4 +675,64 @@ button:not(.btn-tirada):disabled {
         font-size: 0.68rem;
         letter-spacing: 0.4px;
     }
+}
+
+.exportando {
+    background: linear-gradient(180deg, #fbf7ef, #f3ead7);
+    border: 1px solid rgba(123, 87, 22, 0.16);
+    box-shadow: none;
+    color: #2f2415;
+    padding: 28px;
+}
+
+.exportando::before {
+    display: none;
+}
+
+.exportando .lectura-etiqueta,
+.exportando .posicion-carta {
+    color: #7a5a16;
+}
+
+.exportando .lectura-encabezado h2,
+.exportando .nombre-carta {
+    color: #2f2415;
+}
+
+.exportando .lectura-subtitulo,
+.exportando .desc-carta,
+.exportando .carta-placeholder span {
+    color: #5d4b2f;
+}
+
+.exportando .carta-placeholder {
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.18), rgba(255, 248, 234, 0.96));
+    color: #2f2415;
+}
+
+.exportando .carta-inner {
+    transform: none !important;
+    transition: none;
+    box-shadow: 0 10px 20px rgba(82, 61, 18, 0.18);
+}
+
+.exportando .carta-inner:hover {
+    transform: none !important;
+}
+
+.exportando .carta-cara {
+    backface-visibility: visible;
+}
+
+.exportando .carta-reverso {
+    display: none;
+}
+
+.exportando .carta-anverso {
+    transform: none !important;
+}
+
+.exportando .texto-oculto {
+    opacity: 1;
+    transform: none;
 }
