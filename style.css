@@ -678,10 +678,13 @@ button:not(.btn-tirada):disabled {
 }
 
 .exportando {
-    background: linear-gradient(180deg, #fbf7ef, #f3ead7);
-    border: 1px solid rgba(123, 87, 22, 0.16);
+    background: #fbf6ec !important;
+    border: 1px solid #b89135;
     box-shadow: none;
-    color: #2f2415;
+    color: #21170c !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    opacity: 1 !important;
     padding: 28px;
 }
 
@@ -689,31 +692,38 @@ button:not(.btn-tirada):disabled {
     display: none;
 }
 
+.exportando,
+.exportando * {
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    opacity: 1 !important;
+}
+
 .exportando .lectura-etiqueta,
 .exportando .posicion-carta {
-    color: #7a5a16;
+    color: #6f4d00 !important;
 }
 
 .exportando .lectura-encabezado h2,
 .exportando .nombre-carta {
-    color: #2f2415;
+    color: #21170c !important;
 }
 
 .exportando .lectura-subtitulo,
 .exportando .desc-carta,
 .exportando .carta-placeholder span {
-    color: #5d4b2f;
+    color: #3b2b18 !important;
 }
 
 .exportando .carta-placeholder {
-    background: linear-gradient(180deg, rgba(212, 175, 55, 0.18), rgba(255, 248, 234, 0.96));
-    color: #2f2415;
+    background: #f6ecd5 !important;
+    color: #21170c !important;
 }
 
 .exportando .carta-inner {
     transform: none !important;
     transition: none;
-    box-shadow: 0 10px 20px rgba(82, 61, 18, 0.18);
+    box-shadow: 0 10px 20px #d8c394;
 }
 
 .exportando .carta-inner:hover {
@@ -722,6 +732,7 @@ button:not(.btn-tirada):disabled {
 
 .exportando .carta-cara {
     backface-visibility: visible;
+    border-color: #b89135;
 }
 
 .exportando .carta-reverso {
@@ -729,10 +740,17 @@ button:not(.btn-tirada):disabled {
 }
 
 .exportando .carta-anverso {
+    background: #000 !important;
     transform: none !important;
 }
 
 .exportando .texto-oculto {
-    opacity: 1;
-    transform: none;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+.exportando img {
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    opacity: 1 !important;
 }
