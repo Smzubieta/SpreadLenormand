@@ -233,16 +233,14 @@ function renderCard(number, position, index = 0, compacta = false) {
     wrapper.appendChild(inner);
 
     const nombre = document.createElement('p');
-    nombre.className = 'nombre-carta texto-oculto';
+    nombre.className = 'nombre-carta texto-visible';
     nombre.innerText = carta.nombre;
     wrapper.appendChild(nombre);
 
-    if (!compacta) {
-        const desc = document.createElement('p');
-        desc.className = 'desc-carta texto-oculto';
-        desc.innerText = carta.desc;
-        wrapper.appendChild(desc);
-    }
+    const desc = document.createElement('p');
+    desc.className = 'desc-carta texto-visible';
+    desc.innerText = carta.desc;
+    wrapper.appendChild(desc);
 
     setTimeout(() => {
         inner.classList.add('volteada');

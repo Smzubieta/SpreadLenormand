@@ -377,6 +377,28 @@ h1 {
     width: 100%;
 }
 
+.tirada-tableau .nombre-carta {
+    margin-top: 8px;
+    margin-bottom: 3px;
+    font-size: 0.72rem;
+    line-height: 1.15;
+    letter-spacing: 0.4px;
+}
+
+.tirada-tableau .desc-carta {
+    display: -webkit-box;
+    max-width: 100%;
+    margin: 0 auto;
+    color: #cbd5e1;
+    font-size: 0.58rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: none;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
 .carta-3d-wrapper p {
     margin-top: 20px;
     font-family: 'Cinzel', serif;
@@ -413,7 +435,10 @@ h1 {
     color: #cbd5e1;
     line-height: 1.4;
     font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
     max-width: 220px;
+    text-transform: none;
 }
 
 .texto-oculto {
@@ -425,6 +450,12 @@ h1 {
 .texto-visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+.carta-lectura .nombre-carta,
+.carta-lectura .desc-carta {
+    opacity: 1;
+    transform: none;
 }
 
 button:not(.btn-tirada) {
@@ -621,14 +652,20 @@ button:not(.btn-tirada):disabled {
         width: 100%;
     }
 
-    .tirada-tableau .posicion-carta,
-    .tirada-tableau .desc-carta {
+    .tirada-tableau .posicion-carta {
         display: none;
     }
 
     .tirada-tableau .nombre-carta {
         font-size: 0.78rem;
         margin-top: 8px;
+    }
+
+    .tirada-tableau .desc-carta {
+        display: -webkit-box;
+        font-size: 0.56rem;
+        line-height: 1.15;
+        -webkit-line-clamp: 2;
     }
 }
 
@@ -674,6 +711,11 @@ button:not(.btn-tirada):disabled {
     .tirada-tableau .nombre-carta {
         font-size: 0.68rem;
         letter-spacing: 0.4px;
+    }
+
+    .tirada-tableau .desc-carta {
+        font-size: 0.52rem;
+        -webkit-line-clamp: 2;
     }
 }
 
