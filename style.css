@@ -125,10 +125,14 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
     margin: 25px auto 35px;
     width: 100%;
     max-width: min(900px, 100%);
+    padding: 6px;
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.38);
 }
 
 .acciones-principales {
@@ -136,14 +140,15 @@ h1 {
 }
 
 .btn-tirada {
-    background: transparent;
-    border: 1px solid rgba(212, 175, 55, 0.65);
+    flex: 1 1 135px;
+    background: rgba(15, 23, 42, 0.62);
+    border: 1px solid transparent;
     color: var(--dorado-claro);
-    padding: 0.85rem 1.2rem;
+    padding: 0.72rem 0.9rem;
     font-family: 'Cinzel', serif;
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     font-weight: bold;
-    border-radius: 999px;
+    border-radius: 12px;
     cursor: pointer;
     box-shadow: none;
     transition: all 0.3s ease;
@@ -152,15 +157,16 @@ h1 {
 .btn-tirada:hover {
     background: rgba(212, 175, 55, 0.14);
     color: var(--texto);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.2);
+    border-color: rgba(212, 175, 55, 0.38);
+    transform: none;
+    box-shadow: none;
 }
 
 .btn-tirada.activo {
-    background: linear-gradient(135deg, #b8860b, #d4af37, #b8860b);
-    color: #111;
-    border-color: transparent;
-    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.35);
+    background: rgba(212, 175, 55, 0.95);
+    color: #111827;
+    border-color: rgba(243, 229, 171, 0.52);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 
 .opciones-mazo {
@@ -510,6 +516,14 @@ button:not(.btn-tirada) {
     max-width: 100%;
 }
 
+#btn-lanzar {
+    min-width: min(100%, 320px);
+    padding: 1.05rem 2.75rem;
+    font-size: 1.25rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(212, 175, 55, 0.42);
+}
+
 button:not(.btn-tirada):hover:not(:disabled) {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(212, 175, 55, 0.6);
@@ -534,7 +548,16 @@ button:not(.btn-tirada):disabled {
     min-width: 230px;
     font-size: 0.88rem;
     padding: 0.75rem 1.3rem;
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.28);
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.6);
+    color: var(--dorado-claro);
+    box-shadow: none;
+}
+
+.acciones-exportacion button:hover:not(:disabled) {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--texto);
+    box-shadow: none;
 }
 
 #pantalla-juego > a {
@@ -578,15 +601,15 @@ button:not(.btn-tirada):disabled {
     .opciones-tirada {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: 6px;
         margin-bottom: 24px;
     }
 
     .btn-tirada {
         width: 100%;
         min-width: 0;
-        min-height: 52px;
-        font-size: 0.95rem;
+        min-height: 44px;
+        font-size: 0.82rem;
     }
 
     #btn-lanzar {
