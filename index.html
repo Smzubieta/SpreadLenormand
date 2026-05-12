@@ -14,11 +14,11 @@
         <p style="color: var(--dorado-claro); margin-bottom: 30px;">Selecciona la baraja con la que deseas consultar tu destino...</p>
         
         <div class="opciones-mazo">
-            <button class="btn-mazo" onclick="seleccionarMazo('img/NAVEGANTE/')">Mazo Navegante</button>
-            <button class="btn-mazo" onclick="seleccionarMazo('img/GOTICO/')">Mazo gotico</button>
-            <button class="btn-mazo" onclick="seleccionarMazo('img/ENCANTADO/')">Mazo Encantado</button>
-            <button class="btn-mazo" onclick="seleccionarMazo('img/ROSA/')">Mazo Rosa</button>
-            <button class="btn-mazo" onclick="seleccionarMazo('img/BUENOSAIRES/')">Mazo Buenos Aires</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('img/Navegante/')">Mazo Navegante</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('img/Gotico/')">Mazo gotico</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('img/Encantado/')">Mazo Encantado</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('img/Rosa/')">Mazo Rosa</button>
+            <button class="btn-mazo" onclick="seleccionarMazo('img/BuenosAires/')">Mazo Buenos Aires</button>
             </div>
     </div>
 
@@ -32,20 +32,23 @@
             <button class="btn-tirada" type="button" data-spread="cross" onclick="seleccionarTirada('cross')">Tirada Cruz</button>
             <button class="btn-tirada" type="button" data-spread="tableau" onclick="seleccionarTirada('tableau')">Grand Tableau</button>
         </div>
+
+        <div class="acciones-principales">
+            <button id="btn-lanzar" onclick="repartir()">Lanzar Cartas</button>
+        </div>
         
         <section id="resultado-tirada" class="lectura-resultado resultado-tirada" aria-live="polite">
             <div id="lectura-encabezado" class="lectura-encabezado" hidden></div>
             <div id="contenedor-cartas" class="mazo-container">
                 <p style="color: #888;">Toca el botón para revelar tus cartas...</p>
             </div>
+            <aside id="detalle-tableau" class="detalle-tableau" hidden></aside>
         </section>
         
         <div id="acciones-exportacion" class="acciones-exportacion" hidden>
             <button id="btn-descargar-imagen" type="button" onclick="exportReadingAsImage()">Descargar tirada como imagen</button>
         </div>
         
-        <button id="btn-lanzar" onclick="repartir()">Lanzar Cartas</button>
-        <br><br>
         <a href="#" onclick="volverInicio()" style="color: #888; text-decoration: underline; font-size: 0.9rem;">Cambiar de Mazo</a>
     </div>
 

@@ -91,6 +91,7 @@ const DECK_NAMES = {
 function seleccionarMazo(nombreCarpeta) {
     carpetaActual = nombreCarpeta;
     lecturaActual = null;
+    limpiarDetalleTableau();
     
     // Ocultamos el inicio y mostramos el juego
     document.getElementById('pantalla-inicio').style.display = 'none';
@@ -108,6 +109,7 @@ function volverInicio() {
     document.getElementById('pantalla-juego').style.display = 'none';
     document.getElementById('pantalla-inicio').style.display = 'block';
     lecturaActual = null;
+    limpiarDetalleTableau();
     document.getElementById('contenedor-cartas').innerHTML = '<p style="color: #888;">Toca el botón para revelar tus cartas...</p>';
     actualizarResumenLectura();
     actualizarEstadoExportacion();
@@ -118,6 +120,7 @@ function seleccionarTirada(type) {
 
     tiradaActual = type;
     actualizarBotonesTirada();
+    limpiarDetalleTableau();
 }
 
 function actualizarBotonesTirada() {
@@ -152,6 +155,7 @@ function repartir() {
     const contenedor = document.getElementById('contenedor-cartas');
     contenedor.innerHTML = "";
     contenedor.scrollLeft = 0;
+    limpiarDetalleTableau();
 
     const seleccionadas = getRandomCards(spread.count);
     lecturaActual = {
@@ -195,6 +199,7 @@ function renderCard(number, position, index = 0, compacta = false) {
     const carta = cartasLenormand[number];
     const wrapper = document.createElement('div');
     wrapper.className = `carta-3d-wrapper carta-lectura${compacta ? ' carta-lectura-compacta' : ''}`;
+    wrapper.dataset.cardNumber = number;
 
     if (position) {
         const posicion = document.createElement('div');
@@ -272,8 +277,47 @@ function renderTableau(cards) {
 
     cards.forEach((number, index) => {
         const card = renderCard(number, "", index, true);
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `Ver detalle de ${cartasLenormand[number].nombre}`);
+        card.addEventListener('click', () => mostrarDetalleTableau(number, card));
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                mostrarDetalleTableau(number, card);
+            }
+        });
         contenedor.appendChild(card);
     });
+}
+
+function limpiarDetalleTableau() {
+    const detalle = document.getElementById('detalle-tableau');
+    if (!detalle) return;
+
+    detalle.hidden = true;
+    detalle.innerHTML = "";
+    document.querySelectorAll('.tirada-tableau .carta-seleccionada').forEach((card) => {
+        card.classList.remove('carta-seleccionada');
+    });
+}
+
+function mostrarDetalleTableau(number, selectedCard) {
+    const detalle = document.getElementById('detalle-tableau');
+    const carta = cartasLenormand[number];
+    if (!detalle || !carta) return;
+
+    document.querySelectorAll('.tirada-tableau .carta-seleccionada').forEach((card) => {
+        card.classList.remove('carta-seleccionada');
+    });
+
+    selectedCard.classList.add('carta-seleccionada');
+    detalle.hidden = false;
+    detalle.innerHTML = `
+        <p class="detalle-tableau-etiqueta">Carta seleccionada</p>
+        <h3>${carta.nombre}</h3>
+        <p>${carta.desc}</p>
+    `;
 }
 
 function getDeckName() {

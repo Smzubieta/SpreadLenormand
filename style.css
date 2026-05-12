@@ -131,6 +131,10 @@ h1 {
     max-width: min(900px, 100%);
 }
 
+.acciones-principales {
+    margin: 0 auto 1.75rem;
+}
+
 .btn-tirada {
     background: transparent;
     border: 1px solid rgba(212, 175, 55, 0.65);
@@ -375,6 +379,22 @@ h1 {
 
 .tirada-tableau .carta-3d-wrapper {
     width: 100%;
+    padding: 4px;
+    border-radius: 10px;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tirada-tableau .carta-3d-wrapper:hover,
+.tirada-tableau .carta-3d-wrapper:focus-visible {
+    background: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.32);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.tirada-tableau .carta-seleccionada {
+    background: rgba(212, 175, 55, 0.16);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.52);
 }
 
 .tirada-tableau .nombre-carta {
@@ -386,59 +406,76 @@ h1 {
 }
 
 .tirada-tableau .desc-carta {
-    display: -webkit-box;
-    max-width: 100%;
-    margin: 0 auto;
-    color: #cbd5e1;
-    font-size: 0.58rem;
-    line-height: 1.2;
-    letter-spacing: 0;
-    text-transform: none;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
+    display: none;
 }
 
-.carta-3d-wrapper p {
-    margin-top: 20px;
+.detalle-tableau {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 1.25rem auto 0;
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.62);
+    text-align: center;
+}
+
+.detalle-tableau-etiqueta {
+    margin: 0 0 0.25rem;
+    color: var(--dorado);
     font-family: 'Cinzel', serif;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--dorado-claro);
+    font-size: 0.72rem;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.5s ease forwards;
 }
 
-.carta-3d-wrapper p.nombre-visible {
-    opacity: 1;
-    transform: translateY(0);
+.detalle-tableau h3 {
+    margin: 0;
+    color: var(--dorado-claro);
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.detalle-tableau p:last-child {
+    max-width: 36rem;
+    margin: 0.55rem auto 0;
+    color: #d8dee8;
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.45;
 }
 
 .nombre-carta {
     margin-top: 20px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
+    font-size: 1.12rem;
     font-weight: 600;
-    color: var(--dorado-claro);
+    color: var(--dorado);
     text-transform: uppercase;
     letter-spacing: 1px;
+    opacity: 1;
+    transform: none;
+    transition: all 0.5s ease forwards;
 }
 
 .desc-carta {
     margin-top: 0;
     font-family: 'Lora', serif;
-    font-size: 0.95rem;
+    font-size: 0.72rem;
     color: #cbd5e1;
-    line-height: 1.4;
+    line-height: 1.32;
     font-style: italic;
     font-weight: 400;
     letter-spacing: 0;
-    max-width: 220px;
+    max-width: 205px;
     text-transform: none;
+    opacity: 1;
+    transform: none;
+    transition: all 0.5s ease forwards;
 }
 
 .texto-oculto {
@@ -490,13 +527,14 @@ button:not(.btn-tirada):disabled {
     flex-wrap: wrap;
     justify-content: center;
     gap: 14px;
-    margin: 0 0 1.6rem;
+    margin: -0.25rem 0 1.35rem;
 }
 
 .acciones-exportacion button {
-    min-width: 260px;
-    font-size: 1rem;
-    padding: 0.85rem 1.6rem;
+    min-width: 230px;
+    font-size: 0.88rem;
+    padding: 0.75rem 1.3rem;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.28);
 }
 
 #pantalla-juego > a {
@@ -597,13 +635,13 @@ button:not(.btn-tirada):disabled {
 
     .nombre-carta {
         margin-top: 14px;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     .desc-carta {
         max-width: min(100%, 20rem);
         margin: 0 auto;
-        font-size: 0.92rem;
+        font-size: 0.7rem;
     }
 
     .tirada-one .carta-3d-wrapper {
@@ -662,10 +700,19 @@ button:not(.btn-tirada):disabled {
     }
 
     .tirada-tableau .desc-carta {
-        display: -webkit-box;
-        font-size: 0.56rem;
-        line-height: 1.15;
-        -webkit-line-clamp: 2;
+        display: none;
+    }
+
+    .detalle-tableau {
+        padding: 0.9rem;
+    }
+
+    .detalle-tableau h3 {
+        font-size: 1.05rem;
+    }
+
+    .detalle-tableau p:last-child {
+        font-size: 0.82rem;
     }
 }
 
@@ -714,8 +761,7 @@ button:not(.btn-tirada):disabled {
     }
 
     .tirada-tableau .desc-carta {
-        font-size: 0.52rem;
-        -webkit-line-clamp: 2;
+        display: none;
     }
 }
 
@@ -748,7 +794,7 @@ button:not(.btn-tirada):disabled {
 
 .exportando .lectura-encabezado h2,
 .exportando .nombre-carta {
-    color: #21170c !important;
+    color: #6f4d00 !important;
 }
 
 .exportando .lectura-subtitulo,
