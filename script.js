@@ -87,6 +87,14 @@ const DECK_NAMES = {
     "img/BuenosAires/": "Mazo Buenos Aires"
 };
 
+const DECK_PATH_FALLBACKS = {
+    "img/Navegante/": ["img/NAVEGANTE/"],
+    "img/Gotico/": ["img/GOTICO/"],
+    "img/Encantado/": ["img/ENCANTADO/"],
+    "img/Rosa/": ["img/ROSA/"],
+    "img/BuenosAires/": ["img/BUENOSAIRES/"]
+};
+
 // Función para elegir el mazo y cambiar de pantalla
 function seleccionarMazo(nombreCarpeta) {
     carpetaActual = nombreCarpeta;
@@ -218,7 +226,6 @@ function renderCard(number, position, index = 0, compacta = false) {
     anverso.className = 'carta-cara carta-anverso';
 
     const img = document.createElement('img');
-    img.src = `${carpetaActual}${number}${extension}`;
     img.alt = carta.nombre;
 
     const placeholder = document.createElement('div');
@@ -226,13 +233,9 @@ function renderCard(number, position, index = 0, compacta = false) {
     placeholder.innerHTML = `<strong>${carta.nombre}</strong><span>Imagen no disponible</span>`;
     placeholder.style.display = 'none';
 
-    img.onerror = () => {
-        img.style.display = 'none';
-        placeholder.style.display = 'flex';
-    };
-
     anverso.appendChild(img);
     anverso.appendChild(placeholder);
+    cargarImagenCarta(img, number);
     inner.appendChild(reverso);
     inner.appendChild(anverso);
     wrapper.appendChild(inner);
@@ -256,6 +259,41 @@ function renderCard(number, position, index = 0, compacta = false) {
     }, 800 + (index * 160));
 
     return wrapper;
+}
+
+function getCardImageSources(number) {
+    const fileName = `${number}${extension}`;
+    const sources = [`${carpetaActual}${fileName}`];
+    const fallbackFolders = DECK_PATH_FALLBACKS[carpetaActual] || [];
+
+    fallbackFolders.forEach((folder) => {
+        sources.push(`${folder}${fileName}`);
+    });
+
+    if (carpetaActual === "img/Encantado/" && number === 36) {
+        sources.push("img/Encantado/36..webp", "img/ENCANTADO/36..webp");
+    }
+
+    return sources;
+}
+
+function cargarImagenCarta(img, number) {
+    const sources = getCardImageSources(number);
+    let currentSource = 0;
+
+    img.src = sources[currentSource];
+    img.onerror = () => {
+        currentSource += 1;
+
+        if (currentSource < sources.length) {
+            img.src = sources[currentSource];
+            return;
+        }
+
+        img.style.display = 'none';
+        const placeholder = img.parentElement?.querySelector('.carta-placeholder');
+        if (placeholder) placeholder.style.display = 'flex';
+    };
 }
 
 function renderCross(cards) {
